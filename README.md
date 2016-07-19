@@ -1,6 +1,6 @@
 ## PySh
 
-> A shell can run on anywhere Python exists.
+> Another shell can run on anywhere Python exists.
 
 ### Supported shell feature
 
@@ -60,7 +60,7 @@ A shell in unix box is a bridge bewteen user and the kernel through [system call
 
 ![how unix shell work](./assets/unix_shell.gif)
 
-As we can see from above picture, some commands (eg `ls`, `cat`) are passed to other programs, while built-in commands (eg `cd`, `exit`) are executed inside shell. This way can keep shell small in size and strong in function.
+As we can see from above picture (taken from [here](http://docstore.mik.ua/orelly/unix/upt/ch01_02.htm#UPT-ART-1002-FIG-0)), some commands (eg `ls`, `cat`) are passed to other programs, while built-in commands (eg `cd`, `exit`) are executed inside shell. This way can keep shell small in size and strong in function.
 
 In order to let PySh run anywhere (hi, Windows, I mean you), PySh implmented all commands in its core, so there is no [differences](http://unix.stackexchange.com/questions/11454/what-is-the-difference-between-a-builtin-command-and-one-that-is-not) bewteen builtins and one that is not, also you can say all commands are builtins.
 
@@ -72,17 +72,22 @@ So, every command should `yield` something, this is like s-expression in Lisp wo
 
 ### How to contribute
 
-PySh use [pre-commit](http://pre-commit.com/) to keep code quality, so you should install it before contribute.
+PySh use [pre-commit](http://pre-commit.com/) to ensure code quality, so you should install it before contribute.
 
 Fork and PR 🍺
 
 ### TODO
 
+- [redirection](https://en.wikipedia.org/wiki/Redirection_%28computing%29)
 - [wildcarding](https://en.wikipedia.org/wiki/Wildcard_character)
 - [here documents](https://en.wikipedia.org/wiki/Here_document)
 - [command substitution](https://en.wikipedia.org/wiki/Command_substitution)
 - [variables](https://en.wikipedia.org/wiki/Variable_%28programming%29)
 - [control structures for condition-testing and iteration](https://en.wikipedia.org/wiki/Control_flow)
+- more useful commands
+    - curl
+    - wget
+    - sed
 
 ### License
 
