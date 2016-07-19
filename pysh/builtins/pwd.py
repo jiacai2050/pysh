@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import sys
+import os
 
 
 def run(*args):
-    sys.exit(0)
+    yield os.getcwd()

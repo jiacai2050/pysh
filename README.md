@@ -1,8 +1,16 @@
-## pysh
+## PySh
 
-A simple shell for fun.
+A shell can run on anywhere Python can run.
 
-Inspired from [yosh](https://github.com/supasate/yosh).
+
+## Concept
+
+All commands are implmented in Python, which means there is no [differences](http://unix.stackexchange.com/questions/11454/what-is-the-difference-between-a-builtin-command-and-one-that-is-not) bewteen builtins and one that is not.
+
+Supported commands can be found [here](./pysh/builtins).
+
+More commands are on the way. PR welcomed !
+
 
 ### Usage
 
@@ -13,3 +21,7 @@ python -m pysh.shell
 ```
 
 Have fun 😄
+
+### Reference
+
+Inspired from [yosh](https://github.com/supasate/yosh).
