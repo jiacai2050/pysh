@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 
 import os
+import types
 
 
 def run(*args):
     pattern = args[0]
-    str_or_fs = args[1]
+    if isinstance(args[1], types.GeneratorType):
+        str_or_fs = args[1]
+    else:
+        str_or_fs = args[1:]
     for str_or_f in str_or_fs:
         if os.path.isfile(str_or_f):
             with open(str_or_f) as f:
@@ -15,4 +19,9 @@ def run(*args):
                         yield line
         else:
             if pattern in str_or_f:
-                yield line
+                yield str_or_f
+
+
+if __name__ == '__main__':
+    for line in run("python", "grep.py"):
+        print(line)

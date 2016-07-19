@@ -13,7 +13,7 @@ class ShellProcessor(object):
     def add_worker(self, worker):
         self._workers.append(worker)
 
-    def run(self):
+    def assemble(self):
         # this is the pattern for creating a generator
         # pipeline, we start with a generator then wrap
         # each consecutive generator with the pipeline itself
@@ -30,9 +30,12 @@ def tokenize(line):
 
 
 def analyze(cmd_tokens):
-    func = builtins[cmd_tokens[0]]
-    partial_args = cmd_tokens[1:]
-    return func, partial_args
+    if cmd_tokens[0] in builtins:
+        func = builtins[cmd_tokens[0]]
+        partial_args = cmd_tokens[1:]
+        return func, partial_args
+    else:
+        print("command [%s] is gone, Will you make one? PR welcomed!" % cmd_tokens[0])
 
 
 def assemble(cmds):
@@ -44,7 +47,7 @@ def assemble(cmds):
         func, partial_args = analyze(tokenize(cmd))
         sp.add_worker(partial(func, *partial_args))
 
-    return sp
+    return sp.assemble
 
 
 def shell_loop():
@@ -52,9 +55,8 @@ def shell_loop():
     while True:
         line = raw_input("> ")
         if line != "":
-            sp = assemble(line.split("|"))
-
-            for stdout in sp.run():
+            piped_cmd_func = assemble(line.split("|"))
+            for stdout in piped_cmd_func():
                 print(stdout)
 
 
