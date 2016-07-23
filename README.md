@@ -1,6 +1,10 @@
 ## PySh
 
-> Another shell can run on anywhere Python exists.
+> Yet another shell can run anywhere Python exists.
+
+### Why another shell
+
+> Because it's fun.
 
 ### Supported shell feature
 
@@ -66,7 +70,7 @@ In order to let PySh run anywhere (hi, Windows, I mean you), PySh implmented all
 
 One thing I should mention here is:
 
-> Pipelines between different commands are supported by generator in Python.
+> Pipelines between commands are supported by generator in Python.
 
 So, every command should `yield` something, this is like s-expression in Lisp world, where every s-expression should return a value.
 
