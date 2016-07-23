@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
+from __future__ import (
+    print_function, absolute_import, unicode_literals
+)
 import os
+from ..util import stderr_print
 
 
 def run(*f_or_dirs):
@@ -16,4 +20,5 @@ def run(*f_or_dirs):
                     for sub_f_or_dir in os.listdir(f_or_dir):
                         yield sub_f_or_dir
             else:
-                print("%s doesn't exists" % f_or_dir)
+                stderr_print("%s doesn't exists" % f_or_dir)
+                yield None

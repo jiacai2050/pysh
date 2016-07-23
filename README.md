@@ -12,7 +12,11 @@ Common shell features can be found [here](http://www.tldp.org/LDP/intro-linux/ht
 
 - `|`, Pipe output
 - `$var`, Use value for variable
-- `" "`, double quote (allows variable and command expansion)
+- `" "`, Double quote (allows variable and command expansion)
+- `*`, Match any character(s) in filename
+- `?`, Match single character in filename
+- `[ ]`, Match any characters enclosed
+
 
 ### Usage
 
@@ -22,12 +26,10 @@ cd pysh
 python -m pysh.shell
 
 ## Demo
-> ls
-.git
-.gitignore
-.pre-commit-config.yaml
-assets
-pysh
+> ls README*
+README.md
+
+> ls README.??
 README.md
 
 > echo $HOME

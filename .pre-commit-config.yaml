@@ -4,3 +4,11 @@
     -   id: flake8
         args: [--max-line-length=131]
     -   id: trailing-whitespace
+
+-   repo: local
+    hooks:
+    -   id: py-unittest
+        name: py-unittest
+        language: script
+        entry: ./run_all_tests.sh
+        files: \.py$

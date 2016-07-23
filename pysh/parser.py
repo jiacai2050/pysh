@@ -7,6 +7,7 @@ import shlex
 from functools import partial
 from .builtins import builtins
 from .ShellProcessor import ShellProcessor
+from .util import expand_wildcard_args, stderr_print
 
 
 def tokenize(line):
@@ -29,21 +30,22 @@ def tokens2piped_cmd(cmd_tokens):
     return piped_cmds
 
 
+@expand_wildcard_args
 def analyze(cmd_tokens):
     if cmd_tokens[0] in builtins:
-        func = builtins[cmd_tokens[0]]
-        partial_args = cmd_tokens[1:]
-        return func, partial_args
+        cmd_name = builtins[cmd_tokens[0]]
+        cmd_args = cmd_tokens[1:]
+        return cmd_name, cmd_args
     else:
-        print("command [%s] is gone, Will you make one? PR welcomed!" % cmd_tokens[0])
+        stderr_print("command [%s] is gone, Will you make one? PR welcomed!" % cmd_tokens[0])
 
 
 def assemble(piped_cmds):
-    func, partial_args = analyze(piped_cmds[0])
-    sp = ShellProcessor(func(*partial_args))
+    cmd_name, cmd_args = analyze(piped_cmds[0])
+    sp = ShellProcessor(cmd_name(*cmd_args))
 
     for cmd in piped_cmds[1:]:
-        func, partial_args = analyze(cmd)
-        sp.add_command(partial(func, *partial_args))
+        cmd_name, partial_args = analyze(cmd)
+        sp.add_command(partial(cmd_name, *partial_args))
 
     return sp

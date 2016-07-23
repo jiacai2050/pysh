@@ -6,7 +6,7 @@ from __future__ import (
 import importlib
 from glob import glob
 from os import path, sep
-import sys
+from ..util import stderr_print
 
 
 builtins = {}
@@ -19,11 +19,11 @@ for py_file in glob("%s%s*.py" % (py_path, sep)):
         pass
     else:
         try:
-            func_name, _ = path.splitext(py_file)
-            func = importlib.import_module(".%s" % func_name, __name__).run
-            builtins[func_name] = func
-        except Exception, e:
-            print("load builtin func[%s] error: %s" % (func_name, e), file=sys.stderr)
+            cmd_name, _ = path.splitext(py_file)
+            cmd_runner = importlib.import_module(".%s" % cmd_name, __name__).run
+            builtins[cmd_name] = cmd_runner
+        except Exception as e:
+            stderr_print("load builtin cmd[%s] error: %s" % (cmd_name, e))
 
 
 __all__ = ["builtins"]
