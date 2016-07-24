@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+from __future__ import (
+    print_function, absolute_import, unicode_literals
+)
+
 
 class ShellProcessor(object):
     def __init__(self, source):
@@ -20,4 +24,5 @@ class ShellProcessor(object):
             pipeline = command(pipeline)
 
         for val in pipeline:
-            yield val
+            if val is not None:
+                print(val)

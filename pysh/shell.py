@@ -13,9 +13,7 @@ def shell_loop():
             tokens = parser.tokenize(line)
             piped_cmds = parser.tokens2piped_cmd(tokens)
             shell_proc = parser.assemble(piped_cmds)
-            for stdout in shell_proc.run():
-                if stdout is not None:
-                    print(stdout)
+            shell_proc.run()
 
 
 def main():
