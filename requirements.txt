@@ -1,1 +1,2 @@
 chardet==2.3.0
+requests==2.10.0

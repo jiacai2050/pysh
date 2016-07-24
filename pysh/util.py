@@ -5,6 +5,7 @@ from __future__ import (
 )
 import sys
 import codecs
+import types
 from glob import glob
 from chardet.universaldetector import UniversalDetector
 
@@ -30,6 +31,33 @@ def expand_wildcard_args(func):
             return cmd_name, expanded_args
         else:
             return cmd_name, cmd_args
+
+    return wrapper
+
+
+def extract_args(func):
+    """
+    the last one of a commands args can be:
+    1. a string (normal)
+    2. generator (pipeline)
+
+    This annotation is used for extract args out of a generator
+    """
+    def wrapper(*args):
+        if 0 == len(args):
+            full_args = []
+        else:
+            partial_args = [arg for arg in args[0:-1]]
+            extracted_args = []
+            if isinstance(args[-1], types.GeneratorType):
+                for arg in args[-1]:
+                    extracted_args.append(arg)
+            else:
+                extracted_args.append(args[-1])
+
+            full_args = partial_args + extracted_args
+
+        return func(*full_args)
 
     return wrapper
 
