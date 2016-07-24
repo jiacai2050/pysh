@@ -1,4 +1,4 @@
-## PySh
+## PySh  [![Build Status](https://travis-ci.org/jiacai2050/pysh.svg?branch=master)](https://travis-ci.org/jiacai2050/pysh)
 
 > Yet another shell can run anywhere Python exists.
 
