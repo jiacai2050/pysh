@@ -7,11 +7,15 @@ import os
 from ..util import stderr_print
 
 
-def run(*f_or_dirs):
-    if len(f_or_dirs) == 0:
+def run(*args):
+    if len(args) == 0:
         for f_or_dir in os.listdir(os.getcwd()):
             yield f_or_dir
     else:
+        f_or_dirs = args[0]
+        if isinstance(f_or_dirs, basestring):
+            f_or_dirs = [f_or_dirs]
+
         for f_or_dir in f_or_dirs:
             if os.path.exists(f_or_dir):
                 if os.path.isfile(f_or_dir):

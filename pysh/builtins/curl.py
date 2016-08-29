@@ -13,6 +13,9 @@ def run(*args):
         yield None
     else:
         to_fetch_urls = args
+        if isinstance(to_fetch_urls, basestring):
+            to_fetch_urls = [to_fetch_urls]
+
         for to_fetch_url in to_fetch_urls:
             r = requests.get(to_fetch_url)
             for line in r:

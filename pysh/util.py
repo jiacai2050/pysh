@@ -5,8 +5,8 @@ from __future__ import (
 )
 import sys
 import codecs
-import types
 from glob import glob
+import itertools
 from chardet.universaldetector import UniversalDetector
 
 
@@ -17,9 +17,7 @@ def stderr_print(msg):
 
 
 def expand_wildcard_args(func):
-    def wrapper(*args, **kw):
-        cmd_name, cmd_args = func(*args, **kw)
-
+    def wrapper(this, cmd_name, cmd_args, is_pipeline=False):
         if cmd_args is not None and len(cmd_args) > 0:
             expanded_args = []
             for arg in cmd_args:
@@ -28,55 +26,60 @@ def expand_wildcard_args(func):
                     expanded_args.append(arg)
                 else:
                     expanded_args += matched_items
-            return cmd_name, expanded_args
-        else:
-            return cmd_name, cmd_args
+            cmd_args = expanded_args
+
+        return func(this, cmd_name, cmd_args, is_pipeline)
 
     return wrapper
 
 
-def extract_args(func):
+def generalize_args(func):
     """
-    the last one of a commands args can be:
-    1. a string (normal)
+    the last one of a commands args can be a:
+    1. string (normal)
     2. generator (pipeline)
 
-    This annotation is used for extract args out of a generator
+    This annotation is used for turning the string arg(case 1) into a iterable object, List for now.
     """
     def wrapper(*args):
         if 0 == len(args):
             full_args = []
         else:
-            partial_args = [arg for arg in args[0:-1]]
-            extracted_args = []
-            if isinstance(args[-1], types.GeneratorType):
-                for arg in args[-1]:
-                    extracted_args.append(arg)
+            full_args = [arg for arg in args[0:-1]]
+
+            if isinstance(args[-1], basestring):
+                full_args.append([args[-1]])
             else:
-                extracted_args.append(args[-1])
-
-            full_args = partial_args + extracted_args
-
+                full_args = itertools.chain(full_args, args[-1])
         return func(*full_args)
 
     return wrapper
 
 
-detector = UniversalDetector()
-
-
-def open_file(file_to_open):
+def guess_file_encoding(guess_file, detector=UniversalDetector()):
+    max_guess, current_guess = 10, 1
+    good_guess = False
+    default_encoding = "utf-8"
     detector.reset()
-
-    with open(file_to_open, "rb") as f:
+    with open(guess_file, "rb") as f:
         for line in f:
+            if current_guess == max_guess:
+                break
+            else:
+                current_guess += 1
+
             detector.feed(line)
             if detector.done:
+                good_guess = True
                 break
 
     detector.close()
-    file_encoding = detector.result["encoding"]
 
+    return detector.result["encoding"] if good_guess else default_encoding
+
+
+def open_file(file_to_open):
+    file_encoding = guess_file_encoding(file_to_open)
     with codecs.open(file_to_open, encoding=file_encoding) as f:
         for line in f:
             yield line

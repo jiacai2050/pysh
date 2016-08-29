@@ -7,11 +7,14 @@ import os
 from ..util import stderr_print
 
 
-def run(*dirs):
-    if len(dirs) == 0:
+def run(*args):
+    if len(args) == 0:
         stderr_print("mkdir: missing operand")
         yield None
     else:
+        dirs = args[0]
+        if isinstance(dirs, basestring):
+            dirs = [dirs]
         for dir in dirs:
             if os.path.exists(dir):
                 stderr_print("mkdir: cannot create directory [%s]: File exists" % dir)

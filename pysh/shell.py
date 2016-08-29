@@ -11,8 +11,8 @@ def shell_loop():
         line = raw_input("> ")
         if line != "":
             tokens = parser.tokenize(line)
-            piped_cmds = parser.tokens2piped_cmd(tokens)
-            shell_proc = parser.assemble(piped_cmds)
+            cmds = parser.tokens2cmds(tokens)
+            shell_proc = parser.assemble(cmds)
             shell_proc.run()
 
 

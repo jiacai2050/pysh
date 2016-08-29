@@ -4,48 +4,42 @@ from __future__ import (
     print_function, absolute_import, unicode_literals
 )
 import shlex
-from functools import partial
-from .builtins import builtins
 from .ShellProcessor import ShellProcessor
-from .util import expand_wildcard_args, stderr_print
+from .Command import Command
 
 
 def tokenize(line):
     return [x.strip() for x in shlex.split(line)]
 
 
-def tokens2piped_cmd(cmd_tokens):
+def tokens2cmds(cmd_tokens):
     pipeline_sep = r"|"
-    piped_cmds = []
-    c = []
+    cmds = []
+    current_cmd = []
+    is_pipeline = False
     for token in cmd_tokens:
         if pipeline_sep == token:
-            piped_cmds.append(c)
-            c = []
+            if is_pipeline:
+                cmds.append(Command(current_cmd[0], current_cmd[1:], True))
+            else:
+                cmds.append(Command(current_cmd[0], current_cmd[1:]))
+            is_pipeline = True
+            current_cmd = []
         else:
-            c.append(token)
+            current_cmd.append(token)
     else:
-        piped_cmds.append(c)
-
-    return piped_cmds
-
-
-@expand_wildcard_args
-def analyze(cmd_tokens):
-    if cmd_tokens[0] in builtins:
-        cmd_name = builtins[cmd_tokens[0]]
-        cmd_args = cmd_tokens[1:]
-        return cmd_name, cmd_args
-    else:
-        stderr_print("command [%s] is gone, Will you make one? PR welcomed!" % cmd_tokens[0])
+        if is_pipeline:
+            cmds.append(Command(current_cmd[0], current_cmd[1:], True))
+        else:
+            cmds.append(Command(current_cmd[0], current_cmd[1:]))
+    return cmds
 
 
-def assemble(piped_cmds):
-    cmd_name, cmd_args = analyze(piped_cmds[0])
-    sp = ShellProcessor(cmd_name(*cmd_args))
+def assemble(cmds):
+    source_cmd = cmds[0]
+    sp = ShellProcessor(source_cmd.run())
 
-    for cmd in piped_cmds[1:]:
-        cmd_name, partial_args = analyze(cmd)
-        sp.add_command(partial(cmd_name, *partial_args))
+    for piped_cmd in cmds[1:]:
+        sp.add_command(piped_cmd.run())
 
     return sp
