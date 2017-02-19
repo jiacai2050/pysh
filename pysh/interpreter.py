@@ -12,7 +12,7 @@ def tokenize(line):
     return [x.strip() for x in shlex.split(line)]
 
 
-def tokens2cmds(cmd_tokens):
+def analyze(cmd_tokens):
     pipeline_sep = r"|"
     cmds = []
     current_cmd = []
