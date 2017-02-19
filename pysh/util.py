@@ -5,7 +5,6 @@ from __future__ import (
 )
 import sys
 import codecs
-from glob import glob
 import itertools
 from chardet.universaldetector import UniversalDetector
 
@@ -14,23 +13,6 @@ def stderr_print(msg):
     if isinstance(msg, unicode):
         msg = msg.encode("utf-8")
     print(msg, file=sys.stderr)
-
-
-def expand_wildcard_args(func):
-    def wrapper(this, cmd_name, cmd_args, is_pipeline=False):
-        if cmd_args is not None and len(cmd_args) > 0:
-            expanded_args = []
-            for arg in cmd_args:
-                matched_items = glob(arg)
-                if len(matched_items) == 0:
-                    expanded_args.append(arg)
-                else:
-                    expanded_args += matched_items
-            cmd_args = expanded_args
-
-        return func(this, cmd_name, cmd_args, is_pipeline)
-
-    return wrapper
 
 
 def generalize_args(func):

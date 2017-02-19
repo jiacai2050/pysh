@@ -5,13 +5,21 @@ from __future__ import (
 )
 
 
-class ShellProcessor(object):
-    def __init__(self, source):
-        self._source = source
-        self._commands = []
+def console(pipeline):
+    for val in pipeline:
+        if val is not None:
+            print(val)
 
-    def add_command(self, command):
-        self._commands.append(command)
+
+def to_list(pipeline):
+    return [o for o in pipeline]
+
+
+class ShellProcessor(object):
+    def __init__(self, cmds, stdout=console):
+        self._source = cmds[0]
+        self._commands = cmds[1:]
+        self.stdout = stdout
 
     def run(self):
 
@@ -19,10 +27,8 @@ class ShellProcessor(object):
         # pipeline, we start with a generator then wrap
         # each consecutive generator with the pipeline itself
         # https://brett.is/writing/about/generator-pipelines-in-python/
-        pipeline = self._source
+        pipeline = self._source.run()
         for command in self._commands:
-            pipeline = command(pipeline)
+            pipeline = command.run()(pipeline)
 
-        for val in pipeline:
-            if val is not None:
-                print(val)
+        return self.stdout(pipeline)

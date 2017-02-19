@@ -3,17 +3,17 @@
 from __future__ import (
     print_function, absolute_import, unicode_literals
 )
-from . import parser
+from . import interpreter
+from .ShellProcessor import ShellProcessor
 
 
 def shell_loop():
     while True:
         line = raw_input("> ")
         if line != "":
-            tokens = parser.tokenize(line)
-            cmds = parser.tokens2cmds(tokens)
-            shell_proc = parser.assemble(cmds)
-            shell_proc.run()
+            tokens = interpreter.tokenize(line)
+            cmds = interpreter.analyze(tokens)
+            ShellProcessor(cmds).run()
 
 
 def main():
